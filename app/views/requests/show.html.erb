@@ -1,0 +1,108 @@
+<div class="container mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+  
+  <!-- Left Column: Details & Bids -->
+  <div class="md:col-span-2 space-y-6">
+    <!-- Request Header with Countdown -->
+    <div class="bg-white p-6 rounded-lg shadow">
+      <div class="flex justify-between items-start">
+        <div>
+          <h1 class="text-3xl font-bold mb-2"><%= @request.title %></h1>
+          <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded uppercase"><%= @request.status %></span>
+        </div>
+        
+        <!-- STIMULUS COUNTDOWN TIMER -->
+        <div class="text-right">
+          <div class="text-sm font-semibold text-gray-500">Auction Ends In:</div>
+          <div data-controller="countdown" 
+               data-countdown-deadline-value="<%= @request.expires_at.iso8601 %>"
+               class="text-2xl font-mono font-bold text-red-600">
+            Loading...
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-4">
+        <p class="text-gray-600"><%= @request.description %></p>
+        <% if @request.files.attached? %>
+            <div class="mt-4 p-4 bg-gray-50 rounded">
+                <h4 class="font-bold text-gray-700 mb-2">Attachments:</h4>
+                <div class="flex flex-wrap gap-2">
+                    <% @request.files.each do |file| %>
+                        <div class="border p-2 rounded">
+                            <% if file.image? %>
+                                <%= link_to rails_blob_path(file, disposition: "preview"), target: "_blank" do %>
+                                    <%= image_tag file, class: "h-20 w-20 object-cover" %>
+                                <% end %>
+                            <% else %>
+                                <%= link_to filename = file.filename.to_s, rails_blob_path(file, disposition: "preview"), class: "text-indigo-600 hover:underline" %>
+                            <% end %>
+                        </div>
+                    <% end %>
+                </div>
+            </div>
+      <% end %>
+      </div>
+      <div class="mt-4 text-sm text-gray-500 font-bold">Budget: $<%= @request.budget %></div>
+    </div>
+
+    <!-- Live Bidding List -->
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h3 class="text-xl font-bold mb-4">Live Bids (<%= @request.bids.count %>)</h3>
+      
+      <turbo-frame id="bids_list">
+        <%# This line subscribes this browser tab to updates for this request %>
+        <%= turbo_stream_from @request, :bids %>
+        
+        <%# This is the container where new bids get injected %>
+        <div id="bids_container" class="space-y-2">
+          <%= render @request.bids.order(amount: :asc) %>
+        </div>
+      </turbo-frame>
+    </div>
+  </div>
+
+  <!-- Right Column: Place Bid Form -->
+  <% if current_user.is_a?(Freelancer) && @request.open? %>
+    <div class="md:col-span-1">
+      <div class="bg-white p-6 rounded-lg shadow sticky top-4">
+        <h3 class="text-lg font-bold mb-4">Place Your Bid</h3>
+        
+        <turbo-frame id="new_bid_form">
+          <%= render "bids/form", request: @request, bid: Bid.new %>
+      </div>
+    </div>
+  <% end %>
+
+   
+
+  <!-- REAL-TIME CHAT SECTION -->
+  <div class="md:col-span-3 mt-6"> <!-- Spans full width -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <div class="bg-gray-50 px-6 py-3 border-b">
+        <h3 class="font-bold text-gray-700">Request Chat (Q&A)</h3>
+      </div>
+      
+      <div class="p-6">
+        <!-- 1. Subscribe to updates -->
+        <%= turbo_stream_from @request, :messages %>
+
+        <!-- 2. Message Container (Scrollable) -->
+        <div id="messages_container" class="h-64 overflow-y-auto border rounded-lg bg-gray-50 p-4 mb-4">
+          <% if @request.messages.any? %>
+            <%= render @request.messages %>
+          <% else %>
+            <p class="text-center text-gray-400 italic text-sm">No messages yet. Ask a question!</p>
+          <% end %>
+        </div>
+
+        <!-- 3. Input Form -->
+        <div id="new_message_form">
+          <%= render "messages/form", request: @request, message: Message.new %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div> <!-- Close the main grid container -->
+
+</div>

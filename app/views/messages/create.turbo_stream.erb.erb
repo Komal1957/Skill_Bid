@@ -1,0 +1,9 @@
+<%# Append the new message to the container %>
+<%= turbo_stream.append "messages_container" do %>
+  <%= render @message %>
+<% end %>
+
+<%# Reset the form input %>
+<%= turbo_stream.replace "new_message_form" do %>
+  <%= render "form", request: @request, message: Message.new %>
+<% end %>

@@ -1,0 +1,9 @@
+<%# 1. Append the new bid to the list %>
+<%= turbo_stream.append "bids_container" do %>
+  <%= render @bid %>
+<% end %>
+
+<%# 2. Reset the form so it's empty for the next bid %>
+<%= turbo_stream.replace "new_bid_form" do %>
+  <%= render "form", request: @request, bid: Bid.new %>
+<% end %>
