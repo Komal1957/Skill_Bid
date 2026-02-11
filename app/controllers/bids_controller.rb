@@ -10,6 +10,16 @@ class BidsController < ApplicationController
 
     respond_to do |format|
         if @bid.save
+            # Email the Client 
+            RequestMailer.with(request: @request, bid: @bid).new_bid.deliver_now
+
+            #Check if anyone wasoutbid
+            previous_lowest = @request.bids.where.not(id: @bid.id).order(amount: :asc).first
+
+            if previous_lowest && @bid.amount < previous_lowest.amount
+                RequestMailer.with(request: @request, current_bid: previous_lowest).outbid.deliver_now
+            end
+                
             #1. Success: Send the turbo stream update
             format.turbo_stream
             #2. Fallback: For users without JS enabled

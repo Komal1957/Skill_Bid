@@ -1,0 +1,7 @@
+<h1>You've been outbid!</h1>
+<p>Hello <%= @user.email.split('@')[0] %>,</p>
+<p>Someone just placed a lower bid on "<%= @request.title %>".</p>
+<p>New Lowest Bid: <strong>$<%= @request.lowest_bid.amount %></strong></p>
+<p>Hurry up and place a new bid if you still want the job!</p>
+
+<%= link_to "Place a Bid", request_url(@request), class: "button" %>

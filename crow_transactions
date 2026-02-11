@@ -1,0 +1,16 @@
+                                          Table "public.escrow_transactions"
+   Column   |              Type              | Collation | Nullable |                     Default                     
+------------+--------------------------------+-----------+----------+-------------------------------------------------
+ id         | bigint                         |           | not null | nextval('escrow_transactions_id_seq'::regclass)
+ created_at | timestamp(6) without time zone |           | not null | 
+ updated_at | timestamp(6) without time zone |           | not null | 
+ user_id    | bigint                         |           | not null | 
+ request_id | bigint                         |           | not null | 
+Indexes:
+    "escrow_transactions_pkey" PRIMARY KEY, btree (id)
+    "index_escrow_transactions_on_request_id" btree (request_id)
+    "index_escrow_transactions_on_user_id" btree (user_id)
+Foreign-key constraints:
+    "fk_rails_55f99c1d4a" FOREIGN KEY (user_id) REFERENCES users(id)
+    "fk_rails_ac79cf1759" FOREIGN KEY (request_id) REFERENCES requests(id)
+

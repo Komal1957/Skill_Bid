@@ -1,0 +1,6 @@
+<h1>New Bid Received!</h1>
+<p>Hello <%= @client.email.split('@')[0] %>,</p>
+<p><strong><%= @freelancer.email.split('@')[0] %></strong> just placed a bid of <strong>$<%= @bid.amount %></strong> on your request "<%= @request.title %>".</p>
+<p>Current Lowest Bid: <strong>$<%= @request.lowest_bid&.amount || @bid.amount %></strong></p>
+
+<%= link_to "View Bids", request_url(@request), class: "button" %>

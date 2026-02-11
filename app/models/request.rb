@@ -14,6 +14,7 @@ class Request < ApplicationRecord
   validates :budget, numericality: { greater_than_or_equal_to: 0.01 } 
   has_many_attached :files
   has_many :messages, dependent: :destroy
+  has_many :escrow_transactions, dependent: :destroy
  
   # Helper to get the current lowest bid
   def lowest_bid

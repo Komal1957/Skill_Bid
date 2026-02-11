@@ -7,3 +7,6 @@ pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
 pin_all_from "app/javascript/controllers", under: "controllers"
 pin "@rails/actioncable", to: "actioncable.esm.js"
 pin_all_from "app/javascript/channels", under: "channels"
+
+pin "@stripe/stripe-js", to: "https://cdn.jsdelivr.net/npm/@stripe/stripe-js@latest/dist/stripe.esm.js"
+pin "stripe", to: "https://js.stripe.com/v3/"
