@@ -103,6 +103,37 @@
     </div>
   </div>
 
-</div> <!-- Close the main grid container -->
+</div> 
+
+      <!-- PAYMENT / ESCROW STATUS -->
+      <div class="mt-4 p-4 bg-indigo-50 border border-indigo-100 rounded">
+        <h4 class="font-bold text-indigo-800">Escrow Status</h4>
+        
+        <% transaction = @request.escrow_transactions.last %>
+        
+        <% if transaction&.completed? %>
+          <p class="text-green-600 font-bold mt-2">✅ Funds Secured in Escrow ($<%= transaction.amount %>)</p>
+          
+          <%# Change @request.user to @request.client %>
+          <% if current_user.is_a?(AdminUser) || current_user == @request.client %>
+            <%= link_to "Release Funds", release_funds_request_payment_path(@request, transaction), 
+            data: { turbo_method: :patch, turbo_confirm: "Are you sure?" }, 
+            class: "text-sm text-red-600 hover:underline" %>
+          <% end %>
+
+        <% elsif transaction&.released? %>
+          <p class="text-gray-600 font-bold mt-2">💰 Funds Released to Freelancer</p>
+        <% else %>
+          <!-- No payment yet -->
+          <% if current_user == @request.client %>
+            <%= button_to "Fund this Request ($#{@request.budget})", request_payments_path(@request), 
+                data: { controller: "stripe", action: "stripe#checkout", 
+                        stripe_url_value: request_payments_path(@request) },
+                class: "bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mt-2" %>
+          <% else %>
+            <p class="text-gray-500 text-sm mt-2">Waiting for Client to fund the escrow.</p>
+          <% end %>
+        <% end %>
+      </div>
 
 </div>

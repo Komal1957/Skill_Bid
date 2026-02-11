@@ -1,29 +1,41 @@
 <div class="container mx-auto p-6 max-w-2xl">
   <h1 class="text-2xl font-bold mb-6">Post a New Request</h1>
 
+  <!-- This is where 'f' is defined -->
   <%= form_with(model: @request, local: true) do |f| %>
+    
     <% if @request.errors.any? %>
       <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
         <%= @request.errors.full_messages.to_sentence %>
       </div>
     <% end %>
 
-    <div class="mb-4">
-      <%= f.label :title, class: "block text-sm font-medium text-gray-700" %>
-      <%= f.text_field :title, class: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" %>
+    <!-- AI CONTROLLER WRAPPER STARTS HERE -->
+    <div data-controller="ai">
+      
+      <div class="mb-4">
+        <%= f.label :title, class: "block text-sm font-medium text-gray-700" %>
+        <!-- Added AI Target and Action -->
+        <%= f.text_field :title, 
+            class: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2",
+            data: { ai_target: "input", action: "input->ai#suggest" } %>
+        <p class="text-xs text-gray-400 mt-1">Type a title to auto-generate a description...</p>
+      </div>
+
+      <div class="mb-6">
+        <%= f.label :description, "Description", class: "block text-sm font-medium text-gray-700" %>
+        <!-- Added AI Target -->
+        <%= f.text_area :description, rows: 5, 
+            class: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2",
+            data: { ai_target: "output" } %>
+      </div>
+
     </div>
+    <!-- AI CONTROLLER WRAPPER ENDS HERE -->
 
     <div class="mb-4">
-        <%= f.label :category_id, "Category", class: "block text-sm font-medium text-gray-700" %>
-  
-        <!-- We use 'Category.all' to force it to look at the database -->
-        <!-- 'include_blank: true' ensures you have to pick one -->
-        <%= f.collection_select :category_id, 
-            Category.all, 
-            :id, 
-            :name, 
-            { include_blank: "Select a Category" }, 
-            class: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" %>
+      <%= f.label :category_id, "Category", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.collection_select :category_id, Category.all, :id, :name, { prompt: "Select a Category" }, class: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" %>
     </div>
 
     <div class="mb-4">
@@ -36,16 +48,7 @@
       <%= f.datetime_field :expires_at, class: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" %>
     </div>
 
-    <div class="mb-6">
-      <%= f.label :description, "Description", class: "block text-sm font-medium text-gray-700" %>
-      <%= f.text_area :description, rows: 5, class: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" %>
-    </div>
-    
-    <div class="mb-4">
-      <%= f.label :files, "Attach Brief / Reference Images", class: "block text-sm font-medium text-gray-700" %>
-      <%= f.file_field :files, multiple: true, class: "mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" %>
-    </div>
-
     <%= f.submit "Post Request", class: "w-full bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700" %>
-  <% end %>
+
+  <% end %> <!-- This is where the form ends -->
 </div>

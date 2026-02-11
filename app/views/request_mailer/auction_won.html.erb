@@ -1,0 +1,7 @@
+<h1>Congratulations, you won!</h1>
+<p>Hello <%= @freelancer.email.split('@')[0] %>,</p>
+<p>The auction for "<%= @request.title %>" has ended.</p>
+<p>Your bid of <strong>$<%= @bid.amount %></strong> was selected!</p>
+<p>Please check the request page for further instructions.</p>
+
+<%= link_to "View Request", request_url(@request), class: "button" %>

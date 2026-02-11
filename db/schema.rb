@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_09_002548) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_10_061041) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -88,6 +88,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_09_002548) do
     t.index ["parent_id"], name: "index_categories_on_parent_id"
   end
 
+  create_table "escrow_transactions", force: :cascade do |t|
+    t.decimal "amount"
+    t.datetime "created_at", null: false
+    t.bigint "request_id", null: false
+    t.integer "status"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["request_id"], name: "index_escrow_transactions_on_request_id"
+    t.index ["user_id"], name: "index_escrow_transactions_on_user_id"
+  end
+
   create_table "messages", force: :cascade do |t|
     t.text "content"
     t.datetime "created_at", null: false
@@ -114,6 +125,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_09_002548) do
     t.index ["user_id"], name: "index_requests_on_user_id"
   end
 
+  create_table "transactions", force: :cascade do |t|
+    t.decimal "amount"
+    t.datetime "created_at", null: false
+    t.bigint "request_id", null: false
+    t.integer "status"
+    t.string "type"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["request_id"], name: "index_transactions_on_request_id"
+    t.index ["user_id"], name: "index_transactions_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
@@ -132,9 +155,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_09_002548) do
   add_foreign_key "bids", "requests"
   add_foreign_key "bids", "users"
   add_foreign_key "categories", "categories", column: "parent_id"
+  add_foreign_key "escrow_transactions", "requests"
+  add_foreign_key "escrow_transactions", "users"
   add_foreign_key "messages", "requests"
   add_foreign_key "messages", "users"
   add_foreign_key "requests", "categories"
   add_foreign_key "requests", "users"
   add_foreign_key "requests", "users", column: "client_id"
+  add_foreign_key "transactions", "requests"
+  add_foreign_key "transactions", "users"
 end

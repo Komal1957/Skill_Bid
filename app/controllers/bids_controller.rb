@@ -10,16 +10,26 @@ class BidsController < ApplicationController
 
     respond_to do |format|
         if @bid.save
-            #1. Success: Send the turbo stream update
+            # Email the Client
+            RequestMailer.with(request: @request, bid: @bid).new_bid.deliver_now
+
+            # Check if anyone wasoutbid
+            previous_lowest = @request.bids.where.not(id: @bid.id).order(amount: :asc).first
+
+            if previous_lowest && @bid.amount < previous_lowest.amount
+                RequestMailer.with(request: @request, current_bid: previous_lowest).outbid.deliver_now
+            end
+
+            # 1. Success: Send the turbo stream update
             format.turbo_stream
-            #2. Fallback: For users without JS enabled
+            # 2. Fallback: For users without JS enabled
             format.html { redirect_to @request, notice: "Bid placed!" }
         else
             # Error: SStay on the page and show alert
             format.html { redirect_to @request, alert: @bid.errors.full_messages.to_sentence }
         end
     end
-  end    
+  end
 
   def destroy
     @bid = @request.bids.find(params[:id])

@@ -1,0 +1,4 @@
+:schedule:
+  auction_closer_job:
+    cron: "*/1 * * * *" # Run every 1 minute
+    class: "AuctionCloserJob"

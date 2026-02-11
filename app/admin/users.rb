@@ -1,8 +1,8 @@
 ActiveAdmin.register User do
-    # Allow searching by email
+  # Allow searching by email
   filter :email
   # Allow searching by role (Client/Freelancer)
-  filter :type, as: :select, collection: ['Client', 'Freelancer', 'Admin']
+  filter :type, as: :select, collection: [ "Client", "Freelancer", "Admin" ]
   remove_filter :type
 
   index do
@@ -13,7 +13,4 @@ ActiveAdmin.register User do
     column :created_at
     actions
   end
-
-
-  
 end
