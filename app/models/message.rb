@@ -4,5 +4,5 @@ class Message < ApplicationRecord
 
   validates :content, presence: true
   # Broadcast to the stream for this specific request
-  broadcasts_to ->(message) { [message.request, :messages] }, target: "messages_container"
+  broadcasts_to ->(message) { [ message.request, :messages ] }, target: "messages_container"
 end

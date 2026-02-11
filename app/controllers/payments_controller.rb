@@ -13,18 +13,18 @@ class PaymentsController < ApplicationController
 
     # 2. Create Stripe Checkout Session
     session = Stripe::Checkout::Session.create(
-      payment_method_types: ['card'],
-      line_items: [{
+      payment_method_types: [ "card" ],
+      line_items: [ {
         price_data: {
-          currency: 'usd',
+          currency: "usd",
           product_data: {
-            name: "Escrow for: #{@request.title}",
+            name: "Escrow for: #{@request.title}"
           },
-          unit_amount: (@request.budget * 100).to_i, # Stripe uses cents
+          unit_amount: (@request.budget * 100).to_i # Stripe uses cents
         },
-        quantity: 1,
-      }],
-      mode: 'payment',
+        quantity: 1
+      } ],
+      mode: "payment",
       success_url: request_url(@request) + "?payment=success",
       cancel_url: request_url(@request) + "?payment=cancelled",
     )
@@ -36,7 +36,7 @@ class PaymentsController < ApplicationController
     # This action is hit when Stripe redirects back
     # In a real app, you'd use Webhooks to verify securely.
     # For this tutorial, we trust the URL param.
-    
+
     @transaction = current_user.transactions.where(request: @request).last
     if @transaction
       @transaction.update(status: :completed)
@@ -50,7 +50,7 @@ class PaymentsController < ApplicationController
   def release_funds
     @request = Request.find(params[:request_id])
     @transaction = @request.escrow_transactions.find(params[:id])
-  
+
     if @transaction.update(status: :released)
       redirect_to @request, notice: "Funds have been released to the freelancer."
     else

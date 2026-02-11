@@ -72,9 +72,9 @@ gem "pundit", "~> 2.5"
 gem "activeadmin", "~> 3.0"
 
 gem "dartsass-rails", "~> 0.5.1"
-gem 'letter_opener', '~> 1.8'
+gem "letter_opener", "~> 1.8"
 gem "sidekiq-cron", "~> 2.3"
-gem 'letter_opener_web', '~> 3.0'
+gem "letter_opener_web", "~> 3.0"
 gem "redis", "~> 5.4"
 
 gem "stripe", "~> 18.3"

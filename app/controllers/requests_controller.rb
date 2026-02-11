@@ -1,7 +1,7 @@
 class RequestsController < ApplicationController
 before_action :authenticate_user!
-before_action :set_request, only: [:show, :destroy]
-before_action :authorize_request, except: [:index, :show]
+before_action :set_request, only: [ :show, :destroy ]
+before_action :authorize_request, except: [ :index, :show ]
 
 respond_to :html, :json
 def index
@@ -9,27 +9,27 @@ def index
     respond_to do |format|
         format.html
         format.json { render json: @requests }
-    end    
+    end
 end
 
 def show
     # For the "new Bid" form
     @bid = Bid.new
     # ADD THIS BLOCK: Handle the Stripe redirect
-    if params[:payment] == 'success'
+    if params[:payment] == "success"
       # Find the transaction you just created
       transaction = current_user.escrow_transactions.where(request: @request).last
-      
+
       # Update it to completed
       if transaction&.pending?
         transaction.update(status: :completed)
         flash.now[:notice] = "Payment successful! Funds held in escrow."
       end
-      
+
       # Reload the request to ensure the data is fresh for the view
-      @request.reload 
+      @request.reload
     end
-    # END BLOCK
+  # END BLOCK
 end
 
 def new

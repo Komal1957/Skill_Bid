@@ -1,7 +1,7 @@
 class RequestMailer < ApplicationMailer
     default from: "notifications@skillbid.com"
 
-    #Client gets notified of a new bid
+    # Client gets notified of a new bid
     def new_bid(request, bid)
         @request = request
         @bid = bid
@@ -19,8 +19,8 @@ class RequestMailer < ApplicationMailer
 
         mail(to: @user.email, subject: "You have been outbid on '#{@request.title}'")
     end
-    
-    #Winner notification (Used by the job later)
+
+    # Winner notification (Used by the job later)
     def auction_won(request, bid)
         @request = request
         @bid = bid
