@@ -4,6 +4,10 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
   before_action :configure_permitted_parameters, if: :devise_controller?
   protect_from_forgery
+  
+  def after_sign_in_path_for(resource)
+    user_dashboard_path
+  end
 
   #Handle Pindit errors (optional but good  for UI)
 rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
