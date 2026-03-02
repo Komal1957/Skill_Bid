@@ -77,6 +77,6 @@ gem "sidekiq-cron", "~> 2.3"
 gem 'letter_opener_web', '~> 3.0'
 gem "redis", "~> 5.4"
 
-gem "stripe", "~> 18.3"
+gem "stripe", "~> 18.4"
 
 gem "ruby-openai", "~> 8.3"
